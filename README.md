@@ -2,7 +2,7 @@
 Progetto finale del corso "Basi di Dati" @ LT Ingegneria e Science Informatiche, UniBO, Campus di Cesena
 
 ## 1. Autori
-- Gioele Foschi - `gioele-foschi@studio.unibo.it`
+- Gioele Foschi - `gioele.foschi@studio.unibo.it`
 - Nicholas Magi - `nicholas.magi@studio.unibo.it`
 - Matteo Tonelli - `matteo.tonelli@studio.unibo.it`
 
