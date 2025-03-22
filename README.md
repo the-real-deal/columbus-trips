@@ -1,8 +1,12 @@
 # Columbus Trips
 Progetto finale del corso "Basi di Dati" @ LT Ingegneria e Science Informatiche, UniBO, Campus di Cesena
 
+## 1. Autori
+- Gioele Foschi - `gioele-foschi@studio.unibo.it`
+- Nicholas Magi - `nicholas.magi@studio.unibo.it`
+- Matteo Tonelli - `matteo.tonelli@studio.unibo.it`
 
-## Sintesi del progetto
+## 2. Sintesi del progetto
 > Link alla bozza: [Google Docs](https://docs.google.com/document/d/1j8iErA8hUOX79HmMjhbMxyUXvszD3qsm9O617dG7VbU/edit?usp=sharing) 
 
 L'obiettivo del progetto è realizzare un'applicazione che permette agli utenti di creare, condividere e scoprire itinerari di viaggio personalizzati. Un utente ha la possibilità di creare un nuovo itinerario da zero o selezionarne uno tra quelli resi pubblici dalla community.
@@ -38,7 +42,7 @@ Vi saranno infine due tipologie di gruppi: privati, in cui solo il referente del
 - Moderare le recensioni degli utenti per evitare contenuti inappropriati
 - Gestire la visibilità degli itinerari pubblici in base alla qualità dei contenuti
 
-## Tecnologie adottate - [*ancora non definitive*]
+## 3. Tecnologie adottate - [*ancora non definitive*]
 
 Per il lato **front-end**:
 - ReactJS
