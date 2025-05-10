@@ -8,7 +8,7 @@ type FooterProps = {
 }
 
 export default function Footer({ className }: FooterProps) {
-    return <footer className={`${className !== undefined ? className.concat(" ") : ""}w-full lg:h-56 flex flex-col lg:flex-row justify-center`}>
+    return <footer className={`${className !== undefined ? className.concat(" ") : ""}w-full lg:h-56 flex flex-col lg:flex-row justify-center py-5`}>
         <div className="py-5 px-10 lg:py-0 w-full lg:px-0 lg:ps-10 lg:w-1/2 h-full flex flex-col justify-center">
             <ColumbusBrand fontSize="2xl"/>
             <Separator className="mt-2 mb-4"/>
