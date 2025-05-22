@@ -1,0 +1,2 @@
+insert into Admin (Nickname, Name, Surname, Email, Password) values ('hardware', 'Charlie', 'Blowen', 'cblowen0@bloglines.com', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ae');
+mvane14	mvane14@networkadvertising.org	30d76660f57118fd848a802e1a135da4eb86e5a1a449c9a06ad4f94212678bf3 (sass)	11/29/2024	TRUE	777-71-5939	Mathias	Vane	11/10/1918	168	Cascade
