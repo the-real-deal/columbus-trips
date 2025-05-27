@@ -31,22 +31,24 @@ export function SignUpForm({
           </div>
           <Input id="password" type="password" required />
         </div>
-        <div className="grid">
+        <div className="grid grid-cols-2 gap-4">
           <CheckBoxWithText 
             title="Advanced profiling" 
             description="Accept to agree to our Terms of Advanced Data Profiling." 
             onCheckedChange={() => {}}/>
-        </div>
-        <div className="grid">
           <CheckBoxWithText 
             title="Direct marketing" 
             description="Accept to receive the latest updates about the software!" 
             onCheckedChange={() => {}}/>
         </div>
-        <div className="grid">
+        <div className="grid grid-cols-2 gap-4">
           <CheckBoxWithText 
             title="Data sharing with social network" 
             description="Accept to share your activity on social networks!" 
+            onCheckedChange={() => {}}/>
+          <CheckBoxWithText 
+            title="Data sharing with third party companies" 
+            description="Accept to share your activity with third party companies!" 
             onCheckedChange={() => {}}/>
         </div>
         <Button type="submit" className="w-full">

@@ -34,7 +34,7 @@ const links: LinkSet[] = [
             },
             {
                 text: "Cerca gruppi",
-                to: "/groups"
+                to: "/my-groups"
             },
         ]
     },

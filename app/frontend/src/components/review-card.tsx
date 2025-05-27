@@ -5,7 +5,7 @@ import { useState } from "react"
 
 export default function ReviewCard() {
     const [ showMore, setShowMore ] = useState(false)
-    return <Card>
+    return <Card className="max-w-128">
         <CardHeader>
             <div className="flex justify-between">
                 <p>Sandra Milandra</p>
@@ -15,9 +15,9 @@ export default function ReviewCard() {
                     )}
                 </div>
             </div>
-            <small className="text-gray-500">{ new Date().toDateString() }</small>
+            <small className="text-gray-500 text-start">{ new Date().toDateString() }</small>
         </CardHeader>
-        <CardContent className={`${!showMore && "truncate"}`}>
+        <CardContent className={`text-start ${!showMore && "truncate"}`}>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. 
             Consectetur et mollitia iusto quo, repudiandae tempore commodi eos quibusdam, 
             aliquam libero ut. Atque iste excepturi vitae, fugiat magnam optio sapiente? Doloremque?
