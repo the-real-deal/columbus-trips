@@ -1,8 +1,10 @@
 import DefaultLayout from "@/components/layout/default-layout";
 import POICard from "@/components/poi-card";
 import ReviewCard from "@/components/review-card";
+import ReviewForm from "@/components/review-form";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { HashIcon, Lock, MapPin, PersonStanding } from "lucide-react";
+import { HashIcon, Lock, MapPin, PenBox, PersonStanding } from "lucide-react";
 import { useParams } from "react-router";
 
 export default function Trip() {
@@ -23,7 +25,12 @@ export default function Trip() {
             </section>
         </div>
         <section className="px-10 py-10">
-            <h1 className="text-start text-5xl">Recensioni</h1>
+            <div className="flex justify-between">
+                <h1 className="text-start text-5xl">Recensioni</h1>
+                <Button className="inline-flex my-auto" onClick={() => console.log("caio")}><PenBox/> Lascia una recensione</Button>
+            </div>
+            <Separator className="mt-3 mb-5"/>
+            <ReviewForm onSubmit={() => {}}></ReviewForm>
             <Separator className="mt-3 mb-5"/>
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 lg:gap-5 justify-center">
                 { [...Array(10).keys()].map(_ => 
