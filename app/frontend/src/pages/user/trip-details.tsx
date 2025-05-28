@@ -43,7 +43,7 @@ export default function Trip() {
             <Separator className="mt-3 mb-5"/>
             <div className="grid gap-5">
                 { [...Array(10).keys()].map(_ => 
-                    <POICard />
+                    <POICard showOrder={true}/>
                 )}
             </div>
         </section>

@@ -5,15 +5,18 @@ import { InterestChart } from "./interest-chart";
 import ActivityCard from "./activity-card";
 
 type POICardProps = {
-    className?: string
+    className?: string,
+    showOrder?: boolean
 }
 
-export default function POICard({ className }: POICardProps) {
+export default function POICard({ className, showOrder = false }: POICardProps) {
     return <Card className={className}>
         <CardHeader className="flex flex-row items-center">
-            <Badge className="bg-(--primary)/50">
-                <Hash className="inline"/> Tappa numero 1
-            </Badge>
+            { showOrder && 
+                <Badge className="bg-(--primary)/50">
+                    <Hash className="inline"/> Tappa numero 1
+                </Badge>
+            }
             <Badge>
                 <MapPin className="inline"/> Dublin
             </Badge>

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import ColumbusBrand from "@/components/ui/columbus-brand"
 
 export default function AuthPage() {
+
   const [ showSignUp, setShowSignUp ] = useState(false)
 
   return (
