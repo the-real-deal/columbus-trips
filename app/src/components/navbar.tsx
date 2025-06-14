@@ -26,6 +26,10 @@ const links: LinkSet[] = [
                 text: "Crea itinerario",
                 to: "/new-trip"
             },
+            {
+                text: "Tutti gli itinerari",
+                to: "/trips"
+            },
         ]
     },
     {
