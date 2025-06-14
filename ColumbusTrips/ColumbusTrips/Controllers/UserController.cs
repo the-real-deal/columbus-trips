@@ -43,7 +43,10 @@ namespace ColumbusTrips.Controllers
             public string Username { get; set; } = null!;
             public string Email { get; set; } = null!;
             public string Password { get; set; } = null!;
-            public List<bool> policy { get; set; } = null!;
+            public bool Profiling { get; set; }
+            public bool Marketing { get; set; }
+            public bool SocialSharing { get; set; }
+            public bool ThirdPartySharing { get; set; }
             public string DocumentNumber { get; set; } = null!;
             public string Name { get; set; } = null!;
             public string Surname { get; set; } = null!;
@@ -60,6 +63,7 @@ namespace ColumbusTrips.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult CreateUserTrip(UserInput user)
         {
+            Console.WriteLine(user.Username);
             if (MainController.context.Users.Where(u => u.Username == user.Username).ToList().Count >= 1)
             {
                 return new BadRequestResult();
@@ -100,10 +104,10 @@ namespace ColumbusTrips.Controllers
             var policy = new PolicyPreference()
             {
                 UserId = user.Username,
-                AdvancedProfiling = user.policy[0],
-                DirectMarketing = user.policy[1],
-                DataSharingWithThirdPartyCompanies = user.policy[2],
-                DataSharingWithSocialNetworks = user.policy[3]
+                AdvancedProfiling = user.Profiling,
+                DirectMarketing = user.Marketing,
+                DataSharingWithThirdPartyCompanies = user.ThirdPartySharing,
+                DataSharingWithSocialNetworks = user.SocialSharing
             };
             MainController.context.Users.Add(newUser);
             MainController.context.People.Add(newPerson);
