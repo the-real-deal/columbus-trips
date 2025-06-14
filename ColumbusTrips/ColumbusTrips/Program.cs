@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,12 +16,11 @@ builder.Services.AddControllersWithViews()
         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
 
-//builder.Services.AddControllersWithViews()
-//services.AddControllersWithViews()
-//    .AddNewtonsoftJson(options =>
-//    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-//);
+//builder.Services.AddDbContext<ColumbusTrips.Model.ColumbusTrips>(opt =>
+//    opt.
 
+//builder.Services.AddDbContext<TodoContext>(opt =>
+//    opt.UseInMemoryDatabase("TodoList"));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
