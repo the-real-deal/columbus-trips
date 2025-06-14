@@ -15,15 +15,16 @@ import TripsView from './pages/user/trips-view.tsx'
 import { DbContext } from './lib/db-info-context.ts'
 
 export default function App() {
-  const base = "localhost"
+  const base = "https://localhost"
   const port = 7270
 
   return <BrowserRouter basename={import.meta.env.BASE_URL}>
-      <DbContext.Provider value={{
-        base: base,
-        port: port,
-        baseAddress: () => base.concat(":" + String(port))}}>
-    <Routes>
+    <DbContext.Provider value={{
+      base: base,
+      port: port,
+      baseAddress: () => base.concat(":" + String(port))
+    }}>
+      <Routes>
         <Route index path="/" element={<LandingPage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path='/home' element={<Home />} />
@@ -36,7 +37,7 @@ export default function App() {
         <Route path='/new-trip' element={<TripCreation />} />
         <Route path='/new-poi' element={<POIInsertion />} />
         <Route path='/*' element={<NotFound />} />
-    </Routes>
-      </DbContext.Provider>
+      </Routes>
+    </DbContext.Provider>
   </BrowserRouter>
 }

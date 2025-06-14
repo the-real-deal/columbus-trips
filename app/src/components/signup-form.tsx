@@ -16,8 +16,13 @@ import { Checkbox } from "./ui/checkbox"
 import useDbContext from "@/lib/useDbContext"
 
 type Theme = {
-  id: string
-  label: string
+  value: string
+  description: string
+  interests: []
+  poiThemes: []
+  activities: []
+  tickets: []
+  users: []
 }
 
 export function SignUpForm({
@@ -28,18 +33,18 @@ export function SignUpForm({
     username: "",
     email: "",
     password: "",
-    name: "",
-    cognome: "",
-    documentNumber: "",
-    birthdate: "",
-    city: "",
-    street: "",
-    streetNumber: "",
-    themes: [] as string[],
     profiling: false,
     marketing: false,
     socialSharing: false,
     thirdPartySharing: false,
+    documentNumber: "",
+    name: "",
+    surname: "",
+    birthDate: "2001-09-11",
+    residenceCity: "",
+    street: "",
+    streetNumber: 0,
+    preferences: [] as string[]
   })
 
   const dbInfo = useDbContext()
@@ -107,24 +112,24 @@ export function SignUpForm({
           <Input id="password" type="password" required value={formData.password} onChange={handleChange} />
         </div>
         <div className="grid grid-cols-2">
-          <Label htmlFor="nome">Nome</Label>
-          <Input id="nome" type="text" required value={formData.name} onChange={handleChange} />
+          <Label htmlFor="name">Nome</Label>
+          <Input id="name" type="text" required value={formData.name} onChange={handleChange} />
         </div>
         <div className="grid grid-cols-2">
-          <Label htmlFor="cognome">Cognome</Label>
-          <Input id="cognome" type="text" required value={formData.cognome} onChange={handleChange} />
+          <Label htmlFor="surname">Cognome</Label>
+          <Input id="surname" type="text" required value={formData.surname} onChange={handleChange} />
         </div>
         <div className="grid grid-cols-2">
           <Label htmlFor="documentNumber">Document N°</Label>
           <Input id="documentNumber" type="text" required value={formData.documentNumber} onChange={handleChange} />
         </div>
         <div className="grid grid-cols-2">
-          <Label htmlFor="birthdate">Data di nascita</Label>
-          <Input id="birthdate" type="date" required value={formData.birthdate} onChange={handleChange} />
+          <Label htmlFor="birthDate">Data di nascita</Label>
+          <Input id="birthDate" type="date" required value={formData.birthDate} onChange={handleChange} />
         </div>
         <div className="grid grid-cols-2">
-          <Label htmlFor="city">Città di residenza</Label>
-          <Input id="city" type="text" value={formData.city} onChange={handleChange} />
+          <Label htmlFor="residenceCity">Città di residenza</Label>
+          <Input id="residenceCity" type="text" value={formData.residenceCity} onChange={handleChange} />
         </div>
         <div className="grid grid-cols-2">
           <Label htmlFor="street">Via di residenza</Label>
@@ -142,10 +147,10 @@ export function SignUpForm({
                 placeholder="Seleziona preferenze"
                 className="text-left"
               >
-                {formData.themes.length
+                {formData.preferences.length
                   ? themes
-                    .filter(t => formData.themes.includes(t.id))
-                    .map(t => t.label)
+                    .filter(t => formData.preferences.includes(t.value))
+                    .map(t => t.value)
                     .join(", ")
                   : "Seleziona preferenze"}
               </SelectValue>
@@ -153,27 +158,27 @@ export function SignUpForm({
             <SelectContent>
               {themes.map(theme => (
                 <div
-                  key={theme.id}
+                  key={theme.value}
                   className="flex items-center px-2 py-1 cursor-pointer hover:bg-accent"
                   onClick={(e) => {
                     e.stopPropagation()
                     setFormData(prev => {
-                      const isSelected = prev.themes.includes(theme.id)
+                      const isSelected = prev.preferences.includes(theme.value)
                       return {
                         ...prev,
-                        themes: isSelected
-                          ? prev.themes.filter(t => t !== theme.id)
-                          : [...prev.themes, theme.id],
+                        preferences: isSelected
+                          ? prev.preferences.filter(t => t !== theme.value)
+                          : [...prev.preferences, theme.value],
                       }
                     })
                   }}
                 >
                   <Checkbox
-                    checked={formData.themes.includes(theme.id)}
+                    checked={formData.preferences.includes(theme.value)}
                     onCheckedChange={() => { }} // prevent checkbox propagation
                     className="mr-2"
                   />
-                  <span>{theme.label}</span>
+                  <span>{theme.value}</span>
                 </div>
               ))}
             </SelectContent>
