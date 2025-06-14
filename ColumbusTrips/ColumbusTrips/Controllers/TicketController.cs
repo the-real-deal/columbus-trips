@@ -68,6 +68,51 @@ namespace ColumbusTrips.Controllers
             return new List<string> { "poi", "activity", "invite", "join", "trip" };
         }
 
+        [HttpPost("join-request")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult AskToJoin([FromQuery(Name = "groupId")] Guid groupId, [FromQuery(Name = "user")] string username)
+        {
+            var check = MainController.context.Groups.FirstOrDefault(g => g.Id == groupId);
+            if (check == null) return new NotFoundResult();
+            if (check.GroupType != "Invite-Only")
+                return new BadRequestResult();
+
+            var ticket = CreateTicketBase(username, "Stateless");
+            var joinrequest = new JoinRequest()
+            {
+                GroupId = groupId,
+                TicketId = ticket.Id
+            };
+            MainController.context.Tickets.Add(ticket);
+            MainController.context.JoinRequests.Add(joinrequest);
+            MainController.context.SaveChanges();
+
+            return new CreatedAtActionResult(nameof(GetTicket), "Ticket", new { id = ticket.Id, TicketType = "join" }, ticket); ;
+        }
+
+        [HttpPost("invite-user")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult InviteUser([FromQuery(Name = "groupId")] Guid groupId, [FromQuery(Name = "invited-user")] string username)
+        {
+            string? leader = MainController.context.Groups.FirstOrDefault(g => g.Id == groupId)?.Leader;
+            if (leader == null) return new BadRequestResult();
+            var ticket = CreateTicketBase(leader, "Stateless");
+            var invite = new Invite()
+            {
+                GroupId = groupId,
+                TicketId = ticket.Id,
+                UserId = username
+            };
+            MainController.context.Tickets.Add(ticket);
+            MainController.context.Invites.Add(invite);
+            MainController.context.SaveChanges();
+
+            return new CreatedAtActionResult(nameof(GetTicket), "Ticket", new { id = ticket.Id, TicketType = "invite" }, ticket); ;
+        }
+
+
         [HttpPost("poi-insertion-attempt")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

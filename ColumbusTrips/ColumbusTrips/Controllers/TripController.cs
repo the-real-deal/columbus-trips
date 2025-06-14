@@ -37,6 +37,12 @@ namespace ColumbusTrips.Controllers
             return new OkObjectResult(review);
         }
 
+        [HttpGet("public-itineraries")]
+        public  IEnumerable<Trip> GetAllPublicTrips()
+        {
+            return MainController.context.Trips.Where(t=>t.IsPublic).ToList();
+        }
+
         public class InputTrip
         {
             public string Name { get; set; } = null!;
