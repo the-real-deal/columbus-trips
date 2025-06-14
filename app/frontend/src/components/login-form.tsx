@@ -12,8 +12,8 @@ export function LoginForm({
 }: React.ComponentProps<"form">) {
 
   const { user, login, logout } = useAuth()
-  const [username, setUsername] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
+  const [ username, setUsername ] = useState<string>("")
+  const [ password, setPassword ] = useState<string>("")
   const navigator = useNavigate()
   
   const handleLogIn = useCallback((isAdmin: boolean) => {

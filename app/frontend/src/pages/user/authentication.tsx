@@ -8,7 +8,7 @@ import ColumbusBrand from "@/components/ui/columbus-brand"
 
 export default function AuthPage() {
 
-  const [ showSignUp, setShowSignUp ] = useState(false)
+  const [showSignUp, setShowSignUp] = useState(false)
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
@@ -18,21 +18,20 @@ export default function AuthPage() {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            {!showSignUp && <>
-              <LoginForm />
-              <div className="text-center text-sm mt-5">
-                Don&apos;t have an account?{" "}
-                <Button onClick={() => setShowSignUp(true)} variant={"link"}>Sign Up</Button>
-              </div>
-            </>
-            }
-            {showSignUp && <>
-              <SignUpForm />
-              <div className="text-center text-sm mt-5">
-                Already have an account?{" "}
-                <Button onClick={() => setShowSignUp(false)} variant={"link"}>Log In</Button>
-              </div>
-            </>
+            {
+              showSignUp ? <>
+                <SignUpForm />
+                <div className="text-center text-sm mt-5">
+                  Already have an account?{" "}
+                  <Button onClick={() => setShowSignUp(false)} variant={"link"}>Log In</Button>
+                </div>
+              </> : <>
+                <LoginForm />
+                <div className="text-center text-sm mt-5">
+                  Don&apos;t have an account?{" "}
+                  <Button onClick={() => setShowSignUp(true)} variant={"link"}>Sign Up</Button>
+                </div>
+              </>
             }
           </div>
         </div>
