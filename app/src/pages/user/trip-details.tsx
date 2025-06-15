@@ -12,16 +12,74 @@ import useDbContext from "@/lib/useDbContext";
 
 export default function Trip() {
     const { tripId } = useParams();
-    const [trip, setTrip] = useState<Trip | null>(null);
+    const [trip, setTrip] = useState({
+        id: "0",
+        name: "Exploring Berlin with Friends",
+        description: "A fun and adventurous trip exploring Berlin's nightlife and culture.",
+        tripType: "Group",
+        creationDate: "2025-06-15",
+        isPublic: true,
+        suggestedUsersNumber: 4,
+        groupId: "c68f4775-24d8-4b9c-8724-af0e1688e204",
+        userId: null,
+        group: null,
+        itineraries: [
+            {
+                order: 2,
+                tripId: "9f0f2e40-181d-4828-aa29-efd29df78092",
+                pointOfInterestId: "19b630a0-07ec-4e46-bb1f-c9c89cc86d79",
+                pointOfInterest: {
+                    id: "19b630a0-07ec-4e46-bb1f-c9c89cc86d79",
+                    name: "Eiffel Tower",
+                    description: "Wrought-iron lattice tower on the Champ de Mars.",
+                    website: "https://www.toureiffel.paris/en",
+                    longitude: 2.2945,
+                    latitude: 48.8584,
+                    contributor: null,
+                    location: "44856",
+                    activities: [],
+                    contributorNavigation: null,
+                    itineraries: [],
+                    locationNavigation: null,
+                    poiOperations: [],
+                    poiThemes: [],
+                    reviews: [],
+                    tripEdits: [],
+                    images: []
+                }
+            }
+        ],
+        reviews: [
+            {
+                id: "5f4e745e-4665-4c68-8b77-74df6d228666",
+                text: "The Alps hike was tough, but I was disappointed by how poorly organized the trip was. Some parts felt unsafe, and the group wasn’t as friendly as I’d hoped.",
+                rating: 1,
+                dateWritten: "2022-04-28",
+                userId: "adressell2m",
+                tripId: "9f0f2e40-181d-4828-aa29-efd29df78092",
+                pointOfInterestId: null,
+                pointOfInterest: null,
+                user: null
+            }
+        ],
+        tripChanges: [],
+        tripTypeNavigation: null,
+        user: null
+    }
+
+    );
     const dbInfo = useDbContext()
 
     useEffect(() => {
         fetch(`${dbInfo.baseAddress()}/Trip/trip-details?tripID=${tripId}`)
             .then(res => res.json())
-            .then(data => setTrip(data));
+            .then(data => {
+                setTrip(data)
+
+            });
     }, [tripId]);
 
-    if (!trip) return <p>Loading...</p>;
+    if (trip.id === "0") return <p>Loading...</p>;
 
     return (
         <DefaultLayout className="p-0">
@@ -51,7 +109,7 @@ export default function Trip() {
                 <ReviewForm onSubmit={() => { }} />
                 <Separator className="mt-3 mb-5" />
                 <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 lg:gap-5 justify-center">
-                    {trip.reviews.map(review =>
+                    {trip.reviews.map((review: any) =>
                         <ReviewCard key={review.id} review={review} />
                     )}
                 </div>

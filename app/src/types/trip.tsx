@@ -11,6 +11,8 @@ export type Trip = {
 
 export type Itinerary = {
   order: number;
+  tripId: string,
+  pointOfInterestId: string,
   pointOfInterest: PointOfInterest;
 };
 
