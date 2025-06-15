@@ -19,7 +19,7 @@ export default function PopularDestinations({ className }: PopularDestinationsPr
     const dbInfo = useDbContext();
 
     useEffect(() => {
-        fetch(dbInfo.baseAddress().concat("/Statistics/best-pois/"))
+        fetch(dbInfo.baseAddress().concat("/Statistics/best-pois"))
             .then((res) => res.json())
             .then((data: Poi[]) => {
                 setPopularPois(data);
@@ -41,7 +41,7 @@ export default function PopularDestinations({ className }: PopularDestinationsPr
                     {popularPois.map((poi) => (
                         <PopularDestinationCard
                             country={poi.name}
-                            poi_rating={poi.averageRating}
+                            poi_rating={parseFloat(poi.averageRating.toFixed(2))}
                         />
                     ))}
                 </div>
