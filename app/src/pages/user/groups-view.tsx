@@ -46,6 +46,38 @@ export default function GroupsView() {
             .finally(() => setLoadingSearch(false));
     }, [searchQuery]);
 
+    // Submit nuovo gruppo
+    const handleCreateGroup = async () => {
+        setFormLoading(true);
+        setFormSuccess(null);
+        try {
+            const response = await fetch(dbinfo.baseAddress().concat("/Group/new-group"), {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: form.name,
+                    description: form.description,
+                    groupType: form.groupType,
+                    leader: username,
+                }),
+            });
+
+            if (!response.ok) throw new Error("Errore nella creazione del gruppo");
+
+            const data = await response.json();
+            setFormSuccess("Gruppo creato con successo!");
+            setForm({ name: "", description: "", groupType: "Open" });
+
+            // aggiorna lista dei miei gruppi
+            setMyGroups((prev) => [...prev, data]);
+        } catch (err) {
+            console.error(err);
+            setFormSuccess("Errore durante la creazione.");
+        } finally {
+            setFormLoading(false);
+        }
+    };
+
     return (
         <DefaultLayout>
             <h2 className="text-3xl">I miei gruppi</h2>
@@ -129,7 +161,52 @@ export default function GroupsView() {
 
             <section className="grid lg:grid-cols-5">
                 <h2 className="text-6xl lg:col-span-2 flex flex-col justify-center">Nuovo gruppo</h2>
-                <div className="lg:col-span-3"><GroupForm /></div>
+                <div className="lg:col-span-3 space-y-4">
+                    <div>
+                        <Label htmlFor="name">Nome gruppo</Label>
+                        <Input
+                            id="name"
+                            value={form.name}
+                            onChange={(e) => setForm({ ...form, name: e.target.value })}
+                            placeholder="Es. Amici del calcetto"
+                        />
+                    </div>
+                    <div>
+                        <Label htmlFor="description">Descrizione</Label>
+                        <Textarea
+                            id="description"
+                            value={form.description}
+                            onChange={(e) => setForm({ ...form, description: e.target.value })}
+                            placeholder="Descrivi il gruppo..."
+                        />
+                    </div>
+                    <div>
+                        <Label>Tipologia</Label>
+                        <Select
+                            value={form.groupType}
+                            onValueChange={(value) => setForm({ ...form, groupType: value })}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Seleziona tipologia" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Public">Public</SelectItem>
+                                <SelectItem value="Invite-Only">Invite-Only</SelectItem>
+                                <SelectItem value="Private">Private</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <Button onClick={handleCreateGroup} disabled={formLoading}>
+                        {formLoading ? "Creazione..." : "Crea gruppo"}
+                    </Button>
+
+                    {formSuccess && (
+                        <p className={`text-sm ${formSuccess.includes("successo") ? "text-green-500" : "text-red-500"}`}>
+                            {formSuccess}
+                        </p>
+                    )}
+                </div>
             </section>
         </DefaultLayout>
     );
