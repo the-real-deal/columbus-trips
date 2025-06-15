@@ -58,7 +58,7 @@ export default function GroupsView() {
         setFormLoading(true);
         setFormSuccess(null);
         try {
-            const response = await fetch("http://localhost:7270/Group/new-group", {
+            const response = await fetch(dbinfo.baseAddress().concat("/Group/new-group"), {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -194,8 +194,9 @@ export default function GroupsView() {
                                 <SelectValue placeholder="Seleziona tipologia" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="Open">Open</SelectItem>
+                                <SelectItem value="Public">Public</SelectItem>
                                 <SelectItem value="Invite-Only">Invite-Only</SelectItem>
+                                <SelectItem value="Private">Private</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
