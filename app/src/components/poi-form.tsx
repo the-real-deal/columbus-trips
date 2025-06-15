@@ -21,7 +21,7 @@ type POI = {
 };
 
 export default function POIForm() {
-    const dbInfo = useDbContext()
+    const dbInfo = useDbContext();
     const [formData, setFormData] = useState<POI>({
         name: '',
         description: '',
@@ -29,8 +29,8 @@ export default function POIForm() {
         longitude: '',
         latitude: '',
         poiId: uuidv4(),
-        cityId: '140037', // sostituisci con valore dinamico se necessario
-        userId: 'PaoloBitta77' // sostituisci con valore dinamico se necessario
+        cityId: '',
+        userId: 'PaoloBitta77' // Puoi anche renderlo dinamico in futuro
     });
 
     const [errors, setErrors] = useState<{ description?: string }>({});
@@ -54,6 +54,11 @@ export default function POIForm() {
 
         if (formData.description.length > 300) {
             setErrors({ description: 'Description cannot exceed 300 characters.' });
+            return;
+        }
+
+        if (!formData.cityId.trim()) {
+            alert("Inserisci un ID città valido.");
             return;
         }
 
@@ -92,8 +97,8 @@ export default function POIForm() {
                 website: '',
                 longitude: '',
                 latitude: '',
-                poiId: uuidv4(), // opzionalmente rigenera
-                cityId: '140037',
+                poiId: uuidv4(),
+                cityId: '',
                 userId: 'PaoloBitta77'
             });
         } catch (err) {
@@ -106,6 +111,18 @@ export default function POIForm() {
         <Card className="max-w-xl mx-auto mt-10 p-6">
             <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid gap-y-2">
+                        <Label htmlFor="cityId">ID Città</Label>
+                        <Input
+                            id="cityId"
+                            name="cityId"
+                            value={formData.cityId}
+                            onChange={handleChange}
+                            required
+                            placeholder="Es. 140037"
+                        />
+                    </div>
+
                     <div className="grid gap-y-2">
                         <Label htmlFor="name">Nome</Label>
                         <Input
