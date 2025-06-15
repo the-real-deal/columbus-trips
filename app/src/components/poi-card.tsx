@@ -4,19 +4,6 @@ import { Badge } from "./ui/badge";
 import { InterestChart } from "./interest-chart";
 import ActivityCard from "./activity-card";
 
-type POICardProps = {
-  className?: string;
-  showOrder?: boolean;
-  order?: number;
-  poi: {
-    name: string;
-    description: string;
-    location: string;
-    activities: any[];
-    images: { url: string }[];
-  };
-};
-
 export default function POICard({ className, showOrder, order, poi }: any) {
   return (
     <Card className={className}>

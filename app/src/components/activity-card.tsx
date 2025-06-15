@@ -1,15 +1,6 @@
 import { Badge } from "./ui/badge";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 
-type ActivityCardProps = {
-  activity: {
-    name: string;
-    description: string;
-    duration: string;
-    priceRange: string;
-    themes: string[];
-  };
-};
 
 export default function ActivityCard({ activity }: any) {
   return (
