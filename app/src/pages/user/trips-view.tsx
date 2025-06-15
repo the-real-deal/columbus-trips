@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import DefaultLayout from "@/components/layout/default-layout";
 import PopularTripsCard from "@/components/popular-trips/popular-trips-card";
+import useDbContext from "@/lib/useDbContext";
 
 type Trip = {
     id: string;
@@ -16,9 +17,9 @@ type Trip = {
 export default function TripsView() {
     const [trips, setTrips] = useState<Trip[]>([]);
     const [loading, setLoading] = useState(true);
-
+    const dbInfo = useDbContext();
     useEffect(() => {
-        fetch("http://localhost:7270/Trip/public-itineraries")
+        fetch(dbInfo.baseAddress().concat("/Trip/public-itineraries"))
             .then((res) => res.json())
             .then((data: Trip[]) => {
                 setTrips(data);
@@ -44,6 +45,7 @@ export default function TripsView() {
                             key={trip.id}
                             title={trip.name}
                             pois_count={trip.suggestedUsersNumber}
+                            id={trip.id}
                         />
                     ))}
                 </div>

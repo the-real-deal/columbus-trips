@@ -12,11 +12,12 @@ type PopularSingleTripsCardProps = {
     title: string,
     pois_count: number,
     people_count?: number
+    id: string
 }
 
 export default function PopularTripsCard(props: PopularSingleTripsCardProps) {
     const showPeopleCount = props.people_count !== undefined
-    return <Link to={"/trip/1"}>
+    return <Link to={"/trip/" + props.id}>
         <Card className='relative py-0 max-w-max'>
             <CardContent className='px-0 max-h-100'>
                 <img className='max-h-100 object-contain rounded-t-xl' src='/login-images/01.avif' />
