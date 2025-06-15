@@ -2,9 +2,11 @@ import DefaultLayout from "@/components/layout/default-layout";
 import { Button } from "@/components/ui/button";
 import { LogIn, LogOut, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import GroupForm from "@/components/group-form";
 import { useCallback, useEffect, useState } from "react";
 import useDbContext from "@/lib/useDbContext";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Group {
     id: string;
@@ -21,9 +23,14 @@ export default function GroupsView() {
     const [myGroups, setMyGroups] = useState<Group[]>([]);
     const [loadingMy, setLoadingMy] = useState(true);
     const [loadingSearch, setLoadingSearch] = useState(false);
+    const [form, setForm] = useState({ name: "", description: "", groupType: "Open" });
+    const [formLoading, setFormLoading] = useState(false);
+    const [formSuccess, setFormSuccess] = useState<string | null>(null);
 
-    const username = "PaoloBitta77"; // sostituisci con utente attuale dinamicamente se necessario
+    const username = "PaoloBitta77"; // Sostituire dinamicamente se necessario
     const dbinfo = useDbContext();
+
+    // Caricamento gruppi dell’utente
     useEffect(() => {
         fetch(dbinfo.baseAddress().concat(`/Group/my-groups?username=${username}`))
             .then((res) => res.json())
@@ -32,7 +39,7 @@ export default function GroupsView() {
             .finally(() => setLoadingMy(false));
     }, [username]);
 
-    // Funzione di ricerca gruppi remota
+    // Ricerca gruppi
     const searchGroups = useCallback(() => {
         if (!searchQuery.trim()) {
             setSearchResult([]);
@@ -45,6 +52,38 @@ export default function GroupsView() {
             .catch((err) => console.error(err))
             .finally(() => setLoadingSearch(false));
     }, [searchQuery]);
+
+    // Submit nuovo gruppo
+    const handleCreateGroup = async () => {
+        setFormLoading(true);
+        setFormSuccess(null);
+        try {
+            const response = await fetch("http://localhost:7270/Group/new-group", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: form.name,
+                    description: form.description,
+                    groupType: form.groupType,
+                    leader: username,
+                }),
+            });
+
+            if (!response.ok) throw new Error("Errore nella creazione del gruppo");
+
+            const data = await response.json();
+            setFormSuccess("Gruppo creato con successo!");
+            setForm({ name: "", description: "", groupType: "Open" });
+
+            // aggiorna lista dei miei gruppi
+            setMyGroups((prev) => [...prev, data]);
+        } catch (err) {
+            console.error(err);
+            setFormSuccess("Errore durante la creazione.");
+        } finally {
+            setFormLoading(false);
+        }
+    };
 
     return (
         <DefaultLayout>
@@ -72,10 +111,9 @@ export default function GroupsView() {
                             <td>{group.name}</td>
                             <td>{group.groupType}</td>
                             <td className="max-w-10 truncate">{group.description}</td>
-                            <td><Button><LogOut /> Esci</Button></td>
+                            <td><Button variant="destructive"><LogOut /> Esci</Button></td>
                         </tr>
-                    ))
-                    }
+                    ))}
                 </tbody>
             </table>
 
@@ -87,8 +125,6 @@ export default function GroupsView() {
                     <Button onClick={searchGroups}><Search /></Button>
                     <Input
                         className="max-w-50"
-                        id="group"
-                        type="text"
                         placeholder="Digita qui il nome..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -127,9 +163,53 @@ export default function GroupsView() {
 
             <hr className="my-5" />
 
-            <section className="grid lg:grid-cols-5">
+            <section className="grid lg:grid-cols-5 gap-4">
                 <h2 className="text-6xl lg:col-span-2 flex flex-col justify-center">Nuovo gruppo</h2>
-                <div className="lg:col-span-3"><GroupForm /></div>
+                <div className="lg:col-span-3 space-y-4">
+                    <div>
+                        <Label htmlFor="name">Nome gruppo</Label>
+                        <Input
+                            id="name"
+                            value={form.name}
+                            onChange={(e) => setForm({ ...form, name: e.target.value })}
+                            placeholder="Es. Amici del calcetto"
+                        />
+                    </div>
+                    <div>
+                        <Label htmlFor="description">Descrizione</Label>
+                        <Textarea
+                            id="description"
+                            value={form.description}
+                            onChange={(e) => setForm({ ...form, description: e.target.value })}
+                            placeholder="Descrivi il gruppo..."
+                        />
+                    </div>
+                    <div>
+                        <Label>Tipologia</Label>
+                        <Select
+                            value={form.groupType}
+                            onValueChange={(value) => setForm({ ...form, groupType: value })}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Seleziona tipologia" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Open">Open</SelectItem>
+                                <SelectItem value="Invite-Only">Invite-Only</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <Button onClick={handleCreateGroup} disabled={formLoading}>
+                        {formLoading ? "Creazione..." : "Crea gruppo"}
+                    </Button>
+
+                    {formSuccess && (
+                        <p className={`text-sm ${formSuccess.includes("successo") ? "text-green-500" : "text-red-500"}`}>
+                            {formSuccess}
+                        </p>
+                    )}
+                </div>
             </section>
         </DefaultLayout>
     );
