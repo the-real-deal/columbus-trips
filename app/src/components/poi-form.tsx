@@ -21,6 +21,7 @@ type POI = {
 };
 
 export default function POIForm() {
+    const dbInfo = useDbContext()
     const [formData, setFormData] = useState<POI>({
         name: '',
         description: '',
@@ -68,7 +69,6 @@ export default function POIForm() {
         };
 
         try {
-            const dbInfo = useDbContext()
             const response = await fetch(dbInfo.baseAddress().concat('/Ticket/poi-insertion-attempt'), {
                 method: 'POST',
                 headers: {
