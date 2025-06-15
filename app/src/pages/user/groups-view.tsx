@@ -39,7 +39,7 @@ export default function GroupsView() {
             return;
         }
         setLoadingSearch(true);
-        fetch(`http://localhost:7270/Group/search-group?groupname=${encodeURIComponent(searchQuery)}`)
+        fetch(dbinfo.baseAddress().concat(`/Group/search-group?groupname=${encodeURIComponent(searchQuery)}`))
             .then((res) => res.json())
             .then((data: Group[]) => setSearchResult(data))
             .catch((err) => console.error(err))
@@ -70,7 +70,7 @@ export default function GroupsView() {
                                 <img className="max-w-30" src={group.groupPicture ?? "/default-group.png"} alt={`Img di ${group.name}`} />
                             </td>
                             <td>{group.name}</td>
-                            <td>{group.groupType === "Invite-Only" ? "SU INVITO" : "APERTO"}</td>
+                            <td>{group.groupType}</td>
                             <td className="max-w-10 truncate">{group.description}</td>
                             <td><Button><LogOut /> Esci</Button></td>
                         </tr>
@@ -117,7 +117,7 @@ export default function GroupsView() {
                                 <img className="max-w-30" src={group.groupPicture ?? "/default-group.png"} alt={`Img di ${group.name}`} />
                             </td>
                             <td>{group.name}</td>
-                            <td>{group.groupType === "Invite-Only" ? "SU INVITO" : "APERTO"}</td>
+                            <td>{group.groupType}</td>
                             <td className="max-w-10 truncate">{group.description}</td>
                             <td><Button><LogIn /> Unisciti</Button></td>
                         </tr>
