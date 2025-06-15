@@ -1,10 +1,13 @@
+
 import DefaultLayout from "@/components/layout/default-layout";
 import { Button } from "@/components/ui/button";
 import { LogIn, LogOut, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import GroupForm from "@/components/group-form";
 import { useCallback, useEffect, useState } from "react";
 import useDbContext from "@/lib/useDbContext";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Group {
     id: string;
@@ -21,9 +24,14 @@ export default function GroupsView() {
     const [myGroups, setMyGroups] = useState<Group[]>([]);
     const [loadingMy, setLoadingMy] = useState(true);
     const [loadingSearch, setLoadingSearch] = useState(false);
+    const [form, setForm] = useState({ name: "", description: "", groupType: "Open" });
+    const [formLoading, setFormLoading] = useState(false);
+    const [formSuccess, setFormSuccess] = useState<string | null>(null);
 
-    const username = "PaoloBitta77"; // sostituisci con utente attuale dinamicamente se necessario
+    const username = "PaoloBitta77"; // Sostituire dinamicamente se necessario
     const dbinfo = useDbContext();
+
+    // Caricamento gruppi dell’utente
     useEffect(() => {
         fetch(dbinfo.baseAddress().concat(`/Group/my-groups?username=${username}`))
             .then((res) => res.json())
@@ -32,7 +40,7 @@ export default function GroupsView() {
             .finally(() => setLoadingMy(false));
     }, [username]);
 
-    // Funzione di ricerca gruppi remota
+    // Ricerca gruppi
     const searchGroups = useCallback(() => {
         if (!searchQuery.trim()) {
             setSearchResult([]);
@@ -104,10 +112,9 @@ export default function GroupsView() {
                             <td>{group.name}</td>
                             <td>{group.groupType}</td>
                             <td className="max-w-10 truncate">{group.description}</td>
-                            <td><Button><LogOut /> Esci</Button></td>
+                            <td><Button variant="destructive"><LogOut /> Esci</Button></td>
                         </tr>
-                    ))
-                    }
+                    ))}
                 </tbody>
             </table>
 
@@ -119,8 +126,6 @@ export default function GroupsView() {
                     <Button onClick={searchGroups}><Search /></Button>
                     <Input
                         className="max-w-50"
-                        id="group"
-                        type="text"
                         placeholder="Digita qui il nome..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -159,7 +164,7 @@ export default function GroupsView() {
 
             <hr className="my-5" />
 
-            <section className="grid lg:grid-cols-5">
+            <section className="grid lg:grid-cols-5 gap-4">
                 <h2 className="text-6xl lg:col-span-2 flex flex-col justify-center">Nuovo gruppo</h2>
                 <div className="lg:col-span-3 space-y-4">
                     <div>
