@@ -42,6 +42,7 @@ export default function PopularDestinations({ className }: PopularDestinationsPr
                         <PopularDestinationCard
                             country={poi.name}
                             poi_rating={parseFloat(poi.averageRating.toFixed(2))}
+                            id={poi.id}
                         />
                     ))}
                 </div>

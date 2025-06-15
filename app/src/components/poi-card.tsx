@@ -1,7 +1,7 @@
 import { MapPin, Hash } from "lucide-react";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Badge } from "./ui/badge";
-import PoiThemesChart, { type PoiTheme } from "./interest-chart";
+import PoiThemesChart from "./interest-chart";
 import ActivityCard from "./activity-card";
 
 export default function POICard({ className, showOrder, order, poi }: any) {

@@ -7,7 +7,7 @@ import ReviewCard from "@/components/review-card";
 import ReviewForm from "@/components/review-form";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { HashIcon, Lock, MapPin, PenBox, PersonStanding } from "lucide-react";
+import { HashIcon, Lock, PenBox, PersonStanding } from "lucide-react";
 import useDbContext from "@/lib/useDbContext";
 
 export default function Trip() {
@@ -91,9 +91,9 @@ export default function Trip() {
                         Creato il {new Date(trip.creationDate).toLocaleDateString()} ·{" "}
                         {trip.isPublic ? "Pubblico" : <><Lock className="inline scale-75" /> Privato</>}
                     </small>
-                    <div className="grid grid-cols-3">
+                    <div className="grid grid-cols-2">
                         <h4 className="pt-10 text-center text-xl"><HashIcon className="inline" /> {trip.itineraries.length} tappe</h4>
-                        <h4 className="pt-10 text-center text-xl"><MapPin className="inline" /> {trip.itineraries[0]?.pointOfInterest.location || "N/D"}</h4>
+                        {/* <h4 className="pt-10 text-center text-xl"><MapPin className="inline" /> {trip.itineraries[0]?.pointOfInterest.locationNavigation?.name || "N/D"}</h4> */}
                         <h4 className="pt-10 text-center text-xl"><PersonStanding className="inline" /> {trip.suggestedUsersNumber} persone</h4>
                     </div>
                     <h4 className="pt-10 text-center text-xl">{trip.description}</h4>

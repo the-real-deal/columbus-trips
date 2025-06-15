@@ -13,6 +13,7 @@ import MyTrips from './pages/user/my-trips.tsx'
 import MyPois from './pages/user/my-pois.tsx'
 import TripsView from './pages/user/trips-view.tsx'
 import { DbContext } from './lib/db-info-context.ts'
+import Poi from './pages/user/poi-details.tsx'
 
 export default function App() {
   const base = "https://localhost"
@@ -36,6 +37,7 @@ export default function App() {
         <Route path='/dashboard' element={<AdminDashboard />} />
         <Route path='/new-trip' element={<TripCreation />} />
         <Route path='/new-poi' element={<POIInsertion />} />
+        <Route path="/poi/:poiId" element={<Poi />} />
         <Route path='/*' element={<NotFound />} />
       </Routes>
     </DbContext.Provider>
