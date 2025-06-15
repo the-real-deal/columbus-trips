@@ -1,13 +1,53 @@
+import { useEffect, useState } from "react";
 import DefaultLayout from "@/components/layout/default-layout";
 import PopularTripsCard from "@/components/popular-trips/popular-trips-card";
 
+type Trip = {
+    id: string;
+    name: string;
+    description: string;
+    tripType: string;
+    creationDate: string;
+    isPublic: boolean;
+    suggestedUsersNumber: number;
+    userId: string;
+};
+
 export default function TripsView() {
-    const trips = [ 1, 2, 3, 4 ]
-    return <DefaultLayout>
-        <h2 className="text-5xl">Tutti gli itinerari</h2>
-        <hr className="my-4"/>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-4">
-            { trips.map(_ => <PopularTripsCard title="CIAOO" country="Ireland" pois_count={5}/>)}
-        </div>
-    </DefaultLayout>
+    const [trips, setTrips] = useState<Trip[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetch("http://localhost:7270/Trip/public-itineraries")
+            .then((res) => res.json())
+            .then((data: Trip[]) => {
+                setTrips(data);
+            })
+            .catch((err) => {
+                console.error("Errore nel caricamento degli itinerari pubblici:", err);
+            })
+            .finally(() => setLoading(false));
+    }, []);
+
+    return (
+        <DefaultLayout>
+            <h2 className="text-5xl">Tutti gli itinerari</h2>
+            <hr className="my-4" />
+            {loading ? (
+                <p>Caricamento itinerari...</p>
+            ) : trips.length === 0 ? (
+                <p>Nessun itinerario pubblico disponibile.</p>
+            ) : (
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-4 gap-x-3">
+                    {trips.map((trip) => (
+                        <PopularTripsCard
+                            key={trip.id}
+                            title={trip.name}
+                            pois_count={trip.suggestedUsersNumber}
+                        />
+                    ))}
+                </div>
+            )}
+        </DefaultLayout>
+    );
 }
