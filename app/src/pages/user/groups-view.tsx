@@ -4,6 +4,7 @@ import { LogIn, LogOut, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import GroupForm from "@/components/group-form";
 import { useCallback, useEffect, useState } from "react";
+import useDbContext from "@/lib/useDbContext";
 
 interface Group {
     id: string;
@@ -20,10 +21,10 @@ export default function GroupsView() {
     const [myGroups, setMyGroups] = useState<Group[]>([]);
     const [loading, setLoading] = useState(true);
 
-    const username = "username"; // sostituisci con utente attuale dinamicamente se necessario
-
+    const username = "PaoloBitta77"; // sostituisci con utente attuale dinamicamente se necessario
+    const dbinfo = useDbContext();
     useEffect(() => {
-        fetch(`http://localhost:7270/Group/my-groups?username=${username}`)
+        fetch(dbinfo.baseAddress().concat(`/Group/my-groups?username=${username}`))
             .then((res) => res.json())
             .then((data: Group[]) => setMyGroups(data))
             .catch((err) => console.error("Errore nel fetch dei gruppi:", err))
@@ -65,11 +66,10 @@ export default function GroupsView() {
                                     <img
                                         className="max-w-30"
                                         src={group.groupPicture ?? "/default-group.png"}
-                                        alt={`Immagine di ${group.name}`}
                                     />
                                 </td>
                                 <td>{group.name}</td>
-                                <td>{group.groupType === "Invite-Only" ? "SU INVITO" : "APERTO"}</td>
+                                <td>{group.groupType}</td>
                                 <td className="max-w-10 truncate">{group.description}</td>
                                 <td>
                                     <Button><LogOut /> Esci</Button>
