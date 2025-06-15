@@ -107,7 +107,7 @@ export default function GroupsView() {
                     ) : myGroups.map(group => (
                         <tr key={group.id}>
                             <td className="flex justify-center">
-                                <img className="max-w-30" src={group.groupPicture ?? "/default-group.png"} alt={`Img di ${group.name}`} />
+                                <img className="max-w-30" src={group.groupPicture ?? import.meta.env.BASE_URL.concat("login-images/people.png")} alt={`Img di ${group.name}`} />
                             </td>
                             <td>{group.name}</td>
                             <td>{group.groupType}</td>

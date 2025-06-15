@@ -42,9 +42,9 @@ export default function TripsView() {
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-4 gap-x-3">
                     {trips.map((trip) => (
                         <PopularTripsCard
-                            key={trip.id}
+                            people_count={trip.suggestedUsersNumber}
                             title={trip.name}
-                            pois_count={trip.suggestedUsersNumber}
+                            pois_count={0}
                             id={trip.id}
                         />
                     ))}
