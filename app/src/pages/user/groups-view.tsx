@@ -4,6 +4,7 @@ import { LogIn, LogOut, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import GroupForm from "@/components/group-form";
 import { useCallback, useEffect, useState } from "react";
+import useDbContext from "@/lib/useDbContext";
 
 interface Group {
     id: string;
@@ -21,11 +22,10 @@ export default function GroupsView() {
     const [loadingMy, setLoadingMy] = useState(true);
     const [loadingSearch, setLoadingSearch] = useState(false);
 
-    const username = "username"; // sostituisci con utente loggato
-
-    // Fetch "i miei gruppi"
+    const username = "PaoloBitta77"; // sostituisci con utente attuale dinamicamente se necessario
+    const dbinfo = useDbContext();
     useEffect(() => {
-        fetch(`http://localhost:7270/Group/my-groups?username=${username}`)
+        fetch(dbinfo.baseAddress().concat(`/Group/my-groups?username=${username}`))
             .then((res) => res.json())
             .then((data: Group[]) => setMyGroups(data))
             .catch((err) => console.error(err))
@@ -74,7 +74,8 @@ export default function GroupsView() {
                             <td className="max-w-10 truncate">{group.description}</td>
                             <td><Button><LogOut /> Esci</Button></td>
                         </tr>
-                    ))}
+                    ))
+                    }
                 </tbody>
             </table>
 
