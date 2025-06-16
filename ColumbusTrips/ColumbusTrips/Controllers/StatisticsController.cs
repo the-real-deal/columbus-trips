@@ -82,6 +82,10 @@ namespace ColumbusTrips.Controllers
         {
             public Guid ActivityID { get; set; }
             public string? ActivityName { get; set; }
+            public string? ActivityDescription { get; set; }
+            public int ActivityDuration { get; set; }
+            public int ActivityMaxPrice { get; set; }
+            public int ActivityMinPrice { get; set; }
             public Guid PoiID { get; set; }
             public string? PoiName { get; set; }
             public double distanceKm { get; set; }
@@ -100,60 +104,64 @@ namespace ColumbusTrips.Controllers
 
             var result = MainController.context.Database.SqlQuery<PoisAroundYou>($@"
                WITH userinfo(Username,City,CityID,Longitude,Latitude,Category)
-                AS (
-                SELECT 
-                    p.UserID,
-                    c.Name,
-                    p.Residence_City,
-                    c.Longitude,
-                    c.Latitude,
-                    pr.CategoryID
-                FROM
-                    (People p
-                    JOIN Cities c ON p.Residence_City = c.ID)
-                        JOIN
-                    Preferences pr ON pr.UserID = p.UserID
-                WHERE
-                    p.UserID = {username})
-                SELECT DISTINCT
-                    a.ID ActivityID,
-                    a.Name ActivityName,
-                    final.Name PoiName,
-                    final.ID PoiID,
-                    distanceKm,
-                    ath.CategoryID Category
-                FROM
-                    (SELECT 
-                        ID,
-                            Name,
-                            111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(poiLat)) * COS(RADIANS(citLat)) * COS(RADIANS(poiLong - citLong)) + SIN(RADIANS(poiLat)) * SIN(RADIANS(citLat))))) distanceKm
-                    FROM
-                        ((SELECT 
-                        poi.ID, poi.Name, poi.Longitude poiLong, poi.Latitude poiLat
-                    FROM
-                        Points_of_Interest poi
-                    JOIN Poi_Themes pt ON poi.ID = pt.POI_ID
-                    WHERE
-                        pt.Category IN (SELECT 
-                                uf.Category
-                            FROM
-                                userinfo uf)) userPOIs, (SELECT DISTINCT
-                        uifo.CityID,
-                            uifo.City,
-                            uifo.Longitude citLong,
-                            uifo.Latitude citLat
-                    FROM
-                        userinfo uifo) userCty)) final
-                        JOIN
-                    Activities a ON final.ID = a.Point_of_InterestID
-                        JOIN
-                    Activity_Themes ath ON a.ID = ath.ActivityID
-                WHERE
-                    distanceKm < 10
-                        AND ath.CategoryID IN (SELECT 
-                            userinfo.Category
-                        FROM
-                            userinfo);").ToList();
+                 AS (
+                 SELECT 
+                     p.UserID,
+                     c.Name,
+                     p.Residence_City,
+                     c.Longitude,
+                     c.Latitude,
+                     pr.CategoryID
+                 FROM
+                     (People p
+                     JOIN Cities c ON p.Residence_City = c.ID)
+                         JOIN
+                     Preferences pr ON pr.UserID = p.UserID
+                 WHERE
+                     p.UserID = {username})
+                 SELECT DISTINCT
+                     a.ID ActivityID,
+                     a.Name ActivityName,
+                     a.Description ActivityDescription,
+                     a.Duration ActivityDuration,
+                     a.Max_Price ActivityMaxPrice,
+                     a.Min_Price ActivityMinPrice,
+                     final.Name PoiName,
+                     final.ID PoiID,
+                     distanceKm,
+                     ath.CategoryID Category
+                 FROM
+                     (SELECT 
+                         ID,
+                             Name,
+                             111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(poiLat)) * COS(RADIANS(citLat)) * COS(RADIANS(poiLong - citLong)) + SIN(RADIANS(poiLat)) * SIN(RADIANS(citLat))))) distanceKm
+                     FROM
+                         ((SELECT 
+                         poi.ID, poi.Name, poi.Longitude poiLong, poi.Latitude poiLat
+                     FROM
+                         Points_of_Interest poi
+                     JOIN Poi_Themes pt ON poi.ID = pt.POI_ID
+                     WHERE
+                         pt.Category IN (SELECT 
+                                 uf.Category
+                             FROM
+                                 userinfo uf)) userPOIs, (SELECT DISTINCT
+                         uifo.CityID,
+                             uifo.City,
+                             uifo.Longitude citLong,
+                             uifo.Latitude citLat
+                     FROM
+                         userinfo uifo) userCty)) final
+                         JOIN
+                     Activities a ON final.ID = a.Point_of_InterestID
+                         JOIN
+                     Activity_Themes ath ON a.ID = ath.ActivityID
+                 WHERE
+                     distanceKm < 10
+                         AND ath.CategoryID IN (SELECT 
+                             userinfo.Category
+                         FROM
+                             userinfo);").ToList();
             return new OkObjectResult(result);
         }
 
@@ -192,6 +200,5 @@ namespace ColumbusTrips.Controllers
                     LIMIT 10) revs ON p.ID = revs.ID;").ToList();
             return new OkObjectResult(result);
         }
-
     }
 }

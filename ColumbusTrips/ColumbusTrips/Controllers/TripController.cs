@@ -19,9 +19,27 @@ namespace ColumbusTrips.Controllers
         }
 
         [HttpGet("trip-details")]
-        public IEnumerable<Trip> GetTripDetails([FromQuery(Name = "tripID")] Guid tripID)
+        [ProducesResponseType<Trip>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetTripDetails([FromQuery(Name = "tripID")] Guid tripID)
         {
-            return MainController.context.Trips.Where(t => t.Id == tripID).Include(t => t.Reviews).Include(t => t.Itineraries).ThenInclude(i => i.PointOfInterest).ToList();
+            var query = MainController.context.Trips
+                .AsNoTracking()                    // lettura = niente change‑tracking
+                .Include(t => t.Reviews)           // include solo ciò che serve
+                .Include(t => t.Itineraries)
+                    .ThenInclude(i => i.PointOfInterest)
+                        .ThenInclude(p => p.LocationNavigation)
+                .Include(t => t.Itineraries)
+                    .ThenInclude(i => i.PointOfInterest)
+                        .ThenInclude(p => p.PoiThemes)
+                .Include(t => t.Itineraries)
+                    .ThenInclude(i => i.PointOfInterest)
+                        .ThenInclude(p => p.Activities)
+                            .ThenInclude(a => a.Categories)
+                .AsSplitQuery().SingleOrDefault(t => t.Id == tripID);
+            if (query == null) return new NotFoundResult();
+
+            return new OkObjectResult(query);
         }
 
         [HttpGet("trip/{id}")]

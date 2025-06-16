@@ -1,7 +1,9 @@
 ﻿using ColumbusTrips.Model;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using System;
 namespace ColumbusTrips.Controllers
 {
     [ApiController]
@@ -62,6 +64,80 @@ namespace ColumbusTrips.Controllers
             return new OkObjectResult(ticket);
         }
 
+        [HttpGet("all-poi-tickets")]
+        public IEnumerable<PoiOperation> GetAllActiveTickets()
+        {
+            return MainController.context.PoiOperations.Include(t => t.Ticket).ToList();
+        }
+
+        [HttpPut("open-poi-ticket")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult OpenPoiTicket([FromQuery(Name = "ticketId")] Guid id, [FromQuery(Name = "admin")] string admin) 
+        {
+            var ticket = MainController.context.PoiOperations.SingleOrDefault(t=>t.TicketId==id);
+            if (ticket == null)
+                return new BadRequestResult();
+            ticket.CurrentState = "Open";
+            var adminUpdate = new AdminStatefulChange()
+            {
+                Id = Guid.NewGuid(),
+                Admin = admin,
+                TicketId = ticket.TicketId,
+                StateValue = "Open",
+                DateChanged = DateOnly.FromDateTime(DateTime.Now)
+            };
+            MainController.context.AdminStatefulChanges.Add(adminUpdate);
+            MainController.context.SaveChanges();
+            return new AcceptedResult();
+        }
+
+        [HttpPut("close-poi-ticket")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult ClosePoiTicket([FromQuery(Name = "ticketId")] Guid id, [FromQuery(Name = "admin")] string admin, [FromQuery(Name = "accepted")] bool isAccepted)
+        {
+            var ticket = MainController.context.PoiOperations.Include(t=>t.Ticket).SingleOrDefault(t => t.TicketId == id);
+            if (ticket == null)
+                return new BadRequestResult();
+
+            if (isAccepted)
+            {
+                ticket.CurrentState = "Accepted";
+                ticket.Ticket.Result = true;
+                var newPoi = new PointsOfInterest()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = ticket.Name,
+                    Description = ticket.Description,
+                    Website = ticket.Website,
+                    Longitude = ticket.Longitude,
+                    Latitude = ticket.Latitude,
+                    Contributor = ticket.Ticket.UserId,
+                    Location = ticket.CityId
+                };
+                MainController.context.PointsOfInterests.Add(newPoi);
+            }
+            else
+            {
+                ticket.CurrentState = "Denied";
+                ticket.Ticket.Result = false;
+            }
+
+            var adminUpdate = new AdminStatefulChange()
+            {
+                Id = Guid.NewGuid(),
+                Admin = admin,
+                TicketId = ticket.TicketId,
+                StateValue = isAccepted ? "Accepted":"Denied",
+                DateChanged = DateOnly.FromDateTime(DateTime.Now)
+            };
+            MainController.context.AdminStatefulChanges.Add(adminUpdate);
+            MainController.context.SaveChanges();
+            return new AcceptedResult();
+        }
+
+
         [HttpGet("ticket-types")]
         public IEnumerable<string> GetTicketTypes()
         {
@@ -116,7 +192,7 @@ namespace ColumbusTrips.Controllers
         [HttpPost("poi-insertion-attempt")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult CreateUserTrip(PoiTicketInput poiOperation)
+        public IActionResult CreatePoiTicket(PoiTicketInput poiOperation)
         {
             var ticket = CreateTicketBase(poiOperation.UserId,"Statefull");
             var newPoiOperation = new PoiOperation()
@@ -136,6 +212,30 @@ namespace ColumbusTrips.Controllers
             MainController.context.SaveChanges();
             return new CreatedAtActionResult(nameof(GetTicket), "Ticket", new { id = newPoiOperation.TicketId, TicketType="poi" }, ticket);
         }
+
+        //[HttpPost("activity-insertion-attempt")]
+        //[ProducesResponseType(StatusCodes.Status201Created)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //public IActionResult CreateActivityTicket(PoiTicketInput poiOperation)
+        //{
+        //    var ticket = CreateTicketBase(poiOperation.UserId, "Statefull");
+        //    var newPoiOperation = new PoiOperation()
+        //    {
+        //        TicketId = ticket.Id,
+        //        OperationTypeId = "Insertion",
+        //        CityId = poiOperation.CityId,
+        //        Name = poiOperation.Name,
+        //        Description = poiOperation.Description,
+        //        Website = poiOperation.Website,
+        //        Longitude = poiOperation.Longitude,
+        //        Latitude = poiOperation.Latitude,
+        //        CurrentState = "Pending"
+        //    };
+        //    MainController.context.Tickets.Add(ticket);
+        //    MainController.context.PoiOperations.Add(newPoiOperation);
+        //    MainController.context.SaveChanges();
+        //    return new CreatedAtActionResult(nameof(GetTicket), "Ticket", new { id = newPoiOperation.TicketId, TicketType = "poi" }, ticket);
+        //}
 
         private static Ticket CreateTicketBase(string username, string type)
         {

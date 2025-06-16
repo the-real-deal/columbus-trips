@@ -21,6 +21,12 @@ namespace ColumbusTrips.Controllers
             return MainController.context.Reviews.Where(review => review.TripId != null && review.TripId == id).ToList();
         }
 
+        [HttpGet("all-reviews")]
+        public IEnumerable<Review> GetAllReviews()
+        {
+            return MainController.context.Reviews.ToList();
+        }
+
         [HttpGet("review/{id}")]
         [ProducesResponseType<Review>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
