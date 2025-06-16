@@ -76,8 +76,8 @@ export default function TicketsTable({ className }: TableProps) {
                             <td>{ticket.ticket.result ? "Accettato" : "Rifiutato"}</td>
                             <td>
                                 <div className="py-1 flex gap-x-1 justify-center">
-                                    <Button onClick={() => handleDelete(ticket.ticketId)}><Trash /></Button>
-                                    <Button><LucideMailOpen /></Button>
+                                    <Button onClick={() => fetch(dbInfo.baseAddress().concat("/Ticket/open-poi-ticket?ticketId=" + ticket.ticketId + "&admin=Advanced"))}><LucideMailOpen /></Button>
+                                    <Button onClick={() => fetch(dbInfo.baseAddress().concat("/Ticket/close-poi-ticket?ticketId=" + ticket.ticketId + "&admin=Advanced?accepted=" + ["true", "false"][Math.round(Math.random())]))}><Trash /></Button>
                                 </div>
                             </td>
                         </tr>
