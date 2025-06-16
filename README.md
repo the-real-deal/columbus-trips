@@ -51,3 +51,5 @@ Per il lato **front-end**:
 
 Per il lato **back-end**
 - C#
+- Entity Framework
+- Asp Net
