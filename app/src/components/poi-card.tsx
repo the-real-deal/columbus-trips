@@ -5,6 +5,7 @@ import PoiThemesChart from "./interest-chart";
 import ActivityCard from "./activity-card";
 
 export default function POICard({ className, showOrder, order, poi }: any) {
+  console.log(poi)
   return (
     <Card className={className}>
       <CardHeader className="flex flex-row items-center gap-3">
