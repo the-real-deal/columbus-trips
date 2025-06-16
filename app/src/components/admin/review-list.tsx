@@ -65,17 +65,9 @@ export default function ReviewList({ className }: ReviewListProps) {
         console.log("removed " + reviewId);
     }, []);
 
-    if (loading) return <p>Caricamento recensioni…</p>;
-    if (error)
-        return (
-            <p className="text-red-600 text-center">
-                Errore durante il caricamento: {error}
-            </p>
-        );
-
     return (
         <div className={cn(className, "")}>
-            <Button onClick={() => fetchReviews()}></Button>
+            <Button onClick={() => fetchReviews()}>Fetch Reviews</Button>
             <table className="table-auto w-full text-center">
                 <thead>
                     <tr className="bg-(--primary)/20">

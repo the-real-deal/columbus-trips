@@ -50,10 +50,6 @@ export default function TicketsTable({ className }: TableProps) {
         setTickets(prev => prev.filter(t => t.ticketId !== ticketId));
     }, []);
 
-    if (loading) {
-        return <div className={cn(className)}>Caricamento...</div>;
-    }
-
     return (
         <div className={cn(className, "border-2 border-red rounded-sm")}>
             <Button onClick={() => fetchTickets()}>fetchTickets</Button>
