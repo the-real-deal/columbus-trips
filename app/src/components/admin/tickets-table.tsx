@@ -1,86 +1,93 @@
-import { cn } from "@/lib/utils"
-import { Button } from "../ui/button"
-import { Delete, LucideMailOpen, Trash } from "lucide-react"
-import { useCallback, useState } from "react"
+import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { LucideMailOpen, Trash } from "lucide-react";
+import { useCallback, useState } from "react";
+import useDbContext from "@/lib/useDbContext";
 
 type TableProps = {
-    className?: string,
-    tickets?: any[]
-}
+    className?: string;
+};
 
-export default function TicketsTable({ className, tickets }: TableProps) {
-    const [ mockData, setMockData ] = useState<Array<{[k:string]: any}>>(
-        [
-            {
-                id: 1,
-                status: ["OPENED", "CLOSED", "PENDING", "REJECTED"][Math.floor(Math.random() * 3)],
-                openingDate: new Date().toJSON(),
-                lastEdit: new Date().toJSON(),
-                openedBy: "Nicholas Magi",
-                result: "Accepted",
-                admin: "Gioele Foschi"
-            },
-            {
-                id: 2,
-                status: ["OPENED", "CLOSED", "PENDING", "REJECTED"][Math.floor(Math.random() * 3)],
-                openingDate: new Date().toJSON(),
-                lastEdit: new Date().toJSON(),
-                openedBy: "Nicholas Magi",
-                result: "Accepted",
-                admin: "Gioele Foschi"
-            },
-            {
-                id: 3,
-                status: ["OPENED", "CLOSED", "PENDING", "REJECTED"][Math.floor(Math.random() * 3)],
-                openingDate: new Date().toJSON(),
-                lastEdit: new Date().toJSON(),
-                openedBy: "Nicholas Magi",
-                result: "Accepted",
-                admin: "Gioele Foschi"
-            },
-            {
-                id: 4,
-                status: ["OPENED", "CLOSED", "PENDING", "REJECTED"][Math.floor(Math.random() * 3)],
-                openingDate: new Date().toJSON(),
-                lastEdit: new Date().toJSON(),
-                openedBy: "Nicholas Magi",
-                result: "Accepted",
-                admin: "Gioele Foschi"
-            }
-        ]
-    )
+type TicketDTO = {
+    ticketId: string;
+    operationTypeId: string;
+    cityId: string;
+    name: string;
+    description: string;
+    website: string;
+    longitude: number;
+    latitude: number;
+    poiId: string | null;
+    currentState: string;
+    ticket: {
+        id: string;
+        openingDate: string;
+        result: boolean;
+        userId: string;
+        ticketType: string;
+    };
+};
 
-    const handleDelete = useCallback<(id:number) => void>((ticketId) => {
-        setMockData(mockData.filter(d => d["id"] !== ticketId))
-    }, [])
+export default function TicketsTable({ className }: TableProps) {
+    const [tickets, setTickets] = useState<TicketDTO[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const dbInfo = useDbContext()
 
-    return <div className={cn(className, "border-2 border-red rounded-sm")}>
-        <table className="table-auto w-full text-center">
-            <thead>
-                <tr className="bg-(--primary)/20">
-                    <th className="py-2">ID</th>
-                    <th className="py-2">Stato</th>
-                    <th className="py-2">Data di apertura</th>
-                    <th className="py-2">Ultima modifica</th>
-                    <th className="py-2">Aperto da</th>
-                    <th className="py-2">Esito</th>
-                    <th className="py-2">Responsabile</th>
-                    <th className="py-2">Azioni</th>
-                </tr>
-            </thead>
-            <tbody>
-                { mockData.map(ticket => <tr>
-                    { Object.keys(ticket).map(key => 
-                        <td>{ticket[key]}</td>
-                    )}
-                    <td>
-                        <div className="py-1 flex gap-x-1 justify-center">
-                            <Button onClick={() => handleDelete(ticket["id"])}><Trash/></Button>
-                            <Button><LucideMailOpen/></Button>
-                        </div>
-                    </td>
-                </tr>)}
-            </tbody>
-        </table>
-    </div>
+    const fetchTickets = () => {
+        fetch(dbInfo.baseAddress().concat("/Ticket/all-poi-tickets"))
+            .then(res => res.json())
+            .then(data => {
+                setTickets(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error("Errore nel fetch dei ticket:", err);
+                setLoading(false);
+            });
+    }
+
+    const handleDelete = useCallback((ticketId: string) => {
+        setTickets(prev => prev.filter(t => t.ticketId !== ticketId));
+    }, []);
+
+    if (loading) {
+        return <div className={cn(className)}>Caricamento...</div>;
+    }
+
+    return (
+        <div className={cn(className, "border-2 border-red rounded-sm")}>
+            <Button onClick={() => fetchTickets()}>fetchTickets</Button>
+            <table className="table-auto w-full text-center">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Descrizione</th>
+                        <th>Stato</th>
+                        <th>Utente</th>
+                        <th>Data Apertura</th>
+                        <th>Esito</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {tickets.length === 0 ? <p>Nessun ticket</p> : tickets.map(ticket => (
+                        <tr key={ticket.ticketId}>
+                            <td>{ticket.name}</td>
+                            <td>{ticket.description}</td>
+                            <td>{ticket.currentState}</td>
+                            <td>{ticket.ticket.userId}</td>
+                            <td>{new Date(ticket.ticket.openingDate).toLocaleDateString()}</td>
+                            <td>{ticket.ticket.result ? "Accettato" : "Rifiutato"}</td>
+                            <td>
+                                <div className="py-1 flex gap-x-1 justify-center">
+                                    <Button onClick={() => handleDelete(ticket.ticketId)}><Trash /></Button>
+                                    <Button><LucideMailOpen /></Button>
+                                </div>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
 }
