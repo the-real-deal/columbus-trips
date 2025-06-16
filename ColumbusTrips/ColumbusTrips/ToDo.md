@@ -8,3 +8,8 @@
 
 ### Database
 > You need to have an instance of *Mysql Server* with the correct database (Columbus Trips) running on `Localhost`.
+
+### Open Visual Studio
+> Open the asp net project
+- Use the ColumbusTrips.sln file
+- Start the project using https
