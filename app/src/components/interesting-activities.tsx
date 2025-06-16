@@ -77,22 +77,25 @@ export default function InterestingActivities({ className, username }: Interesti
             <h2 className="text-5xl">Attività di mio interesse</h2>
             <Separator className="mt-2 mb-5" />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+            <div className="grid grid-cols-1 gap-5 mb-10">
                 <Button onClick={() => fetchActivities()}>fetchActivities</Button>
-                {activityDetailsList.length === 0 ? <p>Nessuna attività da mostrare</p> : activityDetailsList.map((activity, idx) => (
-                    <ActivityCard key={idx} activity={{
-                        name: activity.activityName,
-                        description: activity.activityDescription,
-                        duration: activity.activityDuration,
-                        minPrice: activity.activityMinPrice,
-                        maxPrice: activity.activityMaxPrice,
-                        categories: [ activity.category ]
-                    }} />
+                {activityDetailsList[0].activityID === "0" ? <p>Nessuna attività da mostrare</p> : activityDetailsList.map((activity, idx) => (
+                    <>
+                        <p>Punto di interesse: {activity.poiName} - {activity.poiID}</p>
+                        <ActivityCard key={idx} activity={{
+                            name: activity.activityName,
+                            description: activity.activityDescription,
+                            duration: activity.activityDuration,
+                            minPrice: activity.activityMinPrice,
+                            maxPrice: activity.activityMaxPrice,
+                            categories: [ activity.category ]
+                        }} />
+                    </>
                 ))}
             </div>
 
             <h3 className="text-3xl mb-3">POI Consigliati per Categoria</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 gap-3">
                 <Button onClick={() => fetchBestPOIs()}>fetchBestPOIs</Button>
                 { bestPOIs.length === 0 ? <p>Nessun POI da mostrare</p> : bestPOIs.map((poi, idx) => (
                     <Card key={idx}>
