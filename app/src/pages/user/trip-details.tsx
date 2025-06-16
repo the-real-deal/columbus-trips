@@ -9,9 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { HashIcon, Lock, PenBox, PersonStanding } from "lucide-react";
 import useDbContext from "@/lib/useDbContext";
+import { useAuth } from "@/auth/AuthContext";
 
 export default function Trip() {
     const { tripId } = useParams();
+    const { user } = useAuth()
+
     const [trip, setTrip] = useState({
         id: "0",
         name: "Exploring Berlin with Friends",
@@ -65,9 +68,8 @@ export default function Trip() {
         tripChanges: [],
         tripTypeNavigation: null,
         user: null
-    }
+    });
 
-    );
     const dbInfo = useDbContext()
 
     useEffect(() => {
@@ -106,7 +108,17 @@ export default function Trip() {
                     <Button className="inline-flex my-auto"><PenBox /> Lascia una recensione</Button>
                 </div>
                 <Separator className="mt-3 mb-5" />
-                <ReviewForm onSubmit={() => { }} />
+                <ReviewForm
+                    tripId={trip.id}
+                    userId={user || "mock-user-id"}
+                    onSuccess={() => {
+                        // Ricarica dati del trip per aggiornare le recensioni
+                        fetch(`${dbInfo.baseAddress()}/Trip/trip-details?tripID=${tripId}`)
+                            .then(res => res.json())
+                            .then(data => setTrip(data));
+                    }}
+                />
+
                 <Separator className="mt-3 mb-5" />
                 <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 lg:gap-5 justify-center">
                     {trip.reviews.map((review: any) =>

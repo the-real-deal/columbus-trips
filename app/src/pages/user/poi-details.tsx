@@ -119,7 +119,7 @@ export default function Poi() {
                     <Button className="inline-flex my-auto"><PenBox /> Lascia una recensione</Button>
                 </div>
                 <Separator className="mt-3 mb-5" />
-                <ReviewForm onSubmit={() => { }} />
+                {/* <ReviewForm onSubmit={() => { }} /> */}
                 <Separator className="mt-3 mb-5" />
                 <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 lg:gap-5 justify-center">
                     {poi.reviews.map((review: any) =>
