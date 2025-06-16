@@ -13,15 +13,6 @@ type InterestingActivitiesProps = {
     username: string
 }
 
-type NearbyActivity = {
-    activityID: string
-    activityName: string
-    poiID: string
-    poiName: string
-    distanceKm: number
-    category: string
-}
-
 type ActivityDetails = {
     name: string
     description: string
@@ -40,7 +31,23 @@ type BestPOI = {
 }
 
 export default function InterestingActivities({ className, username }: InterestingActivitiesProps) {
-    const [activityDetailsList, setActivityDetailsList] = useState<ActivityDetails[]>([])
+    const [activityDetailsList, setActivityDetailsList] = useState(
+        [
+            {
+                activityID: "0",
+                activityName: "Test Gastronomy",
+                activityDescription: "Test Activity",
+                activityDuration: 45,
+                activityMaxPrice: 10,
+                activityMinPrice: 5,
+                poiID: "4a545017-67a2-47e4-b9b7-c55441c75ed7",
+                poiName: "Colosseum",
+                distanceKm: 1.5939283988466189,
+                category: "string"
+            }
+        ]
+
+    )
     const [bestPOIs, setBestPOIs] = useState<BestPOI[]>([])
 
     const dbInfo = useDbContext()
@@ -48,14 +55,8 @@ export default function InterestingActivities({ className, username }: Interesti
     const fetchActivities = async () => {
         try {
             const res = await fetch(`${dbInfo.baseAddress()}/Statistics/poi-around-you?username=${username}`)
-            const nearbyActivities: NearbyActivity[] = await res.json()
-
-            const detailPromises = nearbyActivities.map((activity) =>
-                fetch(`${dbInfo.baseAddress()}/activity-details?activityid=${activity.activityID}`).then(res => res.json())
-            )
-
-            const details = await Promise.all(detailPromises)
-            setActivityDetailsList(details)
+            const nearbyActivities = await res.json()
+            setActivityDetailsList(nearbyActivities)
         } catch (error) {
             console.error("Errore nel recupero attività:", error)
         }
@@ -79,7 +80,14 @@ export default function InterestingActivities({ className, username }: Interesti
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
                 <Button onClick={() => fetchActivities()}>fetchActivities</Button>
                 {activityDetailsList.length === 0 ? <p>Nessuna attività da mostrare</p> : activityDetailsList.map((activity, idx) => (
-                    <ActivityCard key={idx} activity={activity} />
+                    <ActivityCard key={idx} activity={{
+                        name: activity.activityName,
+                        description: activity.activityDescription,
+                        duration: activity.activityDuration,
+                        minPrice: activity.activityMinPrice,
+                        maxPrice: activity.activityMaxPrice,
+                        categories: [ activity.category ]
+                    }} />
                 ))}
             </div>
 
