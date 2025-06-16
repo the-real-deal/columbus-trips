@@ -44,7 +44,6 @@ export default function TripsView() {
                         <PopularTripsCard
                             people_count={trip.suggestedUsersNumber}
                             title={trip.name}
-                            pois_count={0}
                             id={trip.id}
                         />
                     ))}

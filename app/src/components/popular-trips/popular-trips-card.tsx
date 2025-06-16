@@ -1,16 +1,13 @@
-import { MapPin } from 'lucide-react'
 import { Badge } from '../ui/badge'
 import {
     Card,
     CardContent,
-    CardFooter,
-    CardHeader
+    CardFooter
 } from '../ui/card'
 import { Link } from 'react-router'
 
 type PopularSingleTripsCardProps = {
     title: string,
-    pois_count: number,
     people_count?: number
     id: string
 }
@@ -24,8 +21,7 @@ export default function PopularTripsCard(props: PopularSingleTripsCardProps) {
             </CardContent>
             <CardFooter className='px-3 pb-5 grid'>
                 <p className='w-fit uppercase font-bold pb-3'>{props.title || "Rosticceria Pallesudate viaggio"}</p>
-                <p>{props.pois_count || 0} tappe</p>
-                {showPeopleCount &&
+                { showPeopleCount &&
                     <Badge className='justify-self-end'>
                         {props.people_count} persone
                     </Badge>

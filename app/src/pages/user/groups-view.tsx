@@ -8,6 +8,7 @@ import useDbContext from "@/lib/useDbContext";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useAuth } from "@/auth/AuthContext";
 
 interface Group {
     id: string;
@@ -28,17 +29,17 @@ export default function GroupsView() {
     const [formLoading, setFormLoading] = useState(false);
     const [formSuccess, setFormSuccess] = useState<string | null>(null);
 
-    const username = "PaoloBitta77"; // Sostituire dinamicamente se necessario
+    // const { user } = useAuth()
     const dbinfo = useDbContext();
 
     // Caricamento gruppi dell’utente
     useEffect(() => {
-        fetch(dbinfo.baseAddress().concat(`/Group/my-groups?username=${username}`))
+        fetch(dbinfo.baseAddress().concat(`/Group/my-groups?username=PaoloBitta77`))
             .then((res) => res.json())
             .then((data: Group[]) => setMyGroups(data))
             .catch((err) => console.error(err))
             .finally(() => setLoadingMy(false));
-    }, [username]);
+    }, [ ]);
 
     // Ricerca gruppi
     const searchGroups = useCallback(() => {
@@ -66,7 +67,7 @@ export default function GroupsView() {
                     name: form.name,
                     description: form.description,
                     groupType: form.groupType,
-                    leader: username,
+                    leader: "PaoloBitta77",
                 }),
             });
 
